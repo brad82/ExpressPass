@@ -1,0 +1,2 @@
+postgres:5432:*:consign:consign
+postgres:5432:*:authentik:authentik-dev-password

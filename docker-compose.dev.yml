@@ -1,0 +1,88 @@
+services:
+  traefik:
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - ./.docker/traefik/dynamic.dev.yml:/etc/traefik/dynamic.yml:ro
+
+  authentik-server:
+    image: ghcr.io/goauthentik/server:2026.2.2
+    command: server
+    environment:
+      AUTHENTIK_SECRET_KEY: authentik-dev-secret-key-not-for-production
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: authentik-dev-password
+      AUTHENTIK_BOOTSTRAP_EMAIL: admin@example.com
+      AUTHENTIK_BOOTSTRAP_PASSWORD: authentik
+      AUTHENTIK_BOOTSTRAP_TOKEN: authentik-dev-token
+      AUTHENTIK_ERROR_REPORTING__ENABLED: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "ak", "healthcheck"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:2026.2.2
+    command: worker
+    user: root
+    environment:
+      AUTHENTIK_SECRET_KEY: authentik-dev-secret-key-not-for-production
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: authentik-dev-password
+      AUTHENTIK_BOOTSTRAP_EMAIL: admin@example.com
+      AUTHENTIK_BOOTSTRAP_PASSWORD: authentik
+      AUTHENTIK_BOOTSTRAP_TOKEN: authentik-dev-token
+      AUTHENTIK_ERROR_REPORTING__ENABLED: "false"
+    volumes:
+      - ./.docker/authentik/blueprints/expresspass.yaml:/blueprints/expresspass.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      authentik-server:
+        condition: service_healthy
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+      PGADMIN_REPLACE_SERVERS_ON_STARTUP: "True"
+    extra_hosts:
+      - auth.localhost:host-gateway
+    ports:
+      - "5050:80"
+    volumes:
+      - ./.docker/pgadmin/config_local.py:/pgadmin4/config_local.py:ro
+      - ./.docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+      - ./.docker/pgadmin/pgpass:/pgadmin4/pgpass:ro
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+      traefik:
+        condition: service_started
+      authentik-server:
+        condition: service_healthy
+
+  api:
+    profiles:
+      - container-app
+
+  gearshift-worker:
+    profiles:
+      - container-app
+
+  web:
+    profiles:
+      - container-app
+
+volumes:
+  pgadmin-data:

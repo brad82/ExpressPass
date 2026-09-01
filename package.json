@@ -1,0 +1,31 @@
+{
+  "name": "expresspass",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev": "NODE_ENV=development PORT=4000 HOST=0.0.0.0 DATABASE_URL=postgres://consign:consign@localhost:5432/consignments IDENTITY_PROVIDER=authentik AUTHENTIK_BASE_URL=http://auth.localhost AUTHENTIK_TOKEN=authentik-dev-token OIDC_ISSUER=http://auth.localhost/application/o/expresspass/ OIDC_JWKS_URL=http://auth.localhost/application/o/expresspass/jwks/ OIDC_AUDIENCE=expresspass WEB_ORIGIN=http://localhost:3000,http://localhost,http://web.localhost AWS_REGION=garage S3_ENDPOINT=http://localhost:3900 S3_FORCE_PATH_STYLE=true AWS_ACCESS_KEY_ID=GK111111111111111111111111 AWS_SECRET_ACCESS_KEY=1111111111111111111111111111111111111111111111111111111111111111 S3_CONSIGNMENT_BUCKET=local-consignments RABBITMQ_URL=amqp://localhost:5672 GEARSHIFT_EXCHANGE=gearshift.events GEARSHIFT_QUEUE=gearshift.customer-events GEARSHIFT_DLX=gearshift.events.dlx GEARSHIFT_DLQ=gearshift.customer-events.dlq VITE_API_BASE_URL=http://localhost:4000 VITE_OIDC_AUTHORITY=http://auth.localhost/application/o/expresspass/ VITE_OIDC_CLIENT_ID=expresspass VITE_OIDC_REDIRECT_URI=http://localhost:3000/auth/callback VITE_OIDC_POST_LOGOUT_REDIRECT_URI=http://localhost:3000 VITE_OIDC_SCOPE=\"openid profile email\" concurrently \"npm run dev -w apps/api\" \"npm run dev -w apps/gearshift-worker\" \"npm run dev -w apps/web\"",
+    "dev:infra": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --wait --wait-timeout 180 --remove-orphans traefik postgres rabbitmq garage authentik-server authentik-worker",
+    "dev:traefik": "npm run dev:infra && NODE_ENV=development PORT=4000 HOST=0.0.0.0 DATABASE_URL=postgres://consign:consign@localhost:5432/consignments IDENTITY_PROVIDER=authentik AUTHENTIK_BASE_URL=http://auth.localhost AUTHENTIK_TOKEN=authentik-dev-token OIDC_ISSUER=http://auth.localhost/application/o/expresspass/ OIDC_JWKS_URL=http://auth.localhost/application/o/expresspass/jwks/ OIDC_AUDIENCE=expresspass WEB_ORIGIN=http://localhost:3000,http://localhost,http://web.localhost AWS_REGION=garage S3_ENDPOINT=http://localhost:3900 S3_FORCE_PATH_STYLE=true AWS_ACCESS_KEY_ID=GK111111111111111111111111 AWS_SECRET_ACCESS_KEY=1111111111111111111111111111111111111111111111111111111111111111 S3_CONSIGNMENT_BUCKET=local-consignments RABBITMQ_URL=amqp://localhost:5672 GEARSHIFT_EXCHANGE=gearshift.events GEARSHIFT_QUEUE=gearshift.customer-events GEARSHIFT_DLX=gearshift.events.dlx GEARSHIFT_DLQ=gearshift.customer-events.dlq VITE_API_BASE_URL=/api VITE_OIDC_AUTHORITY=http://auth.localhost/application/o/expresspass/ VITE_OIDC_CLIENT_ID=expresspass VITE_OIDC_REDIRECT_URI=http://localhost/auth/callback VITE_OIDC_POST_LOGOUT_REDIRECT_URI=http://localhost VITE_OIDC_SCOPE=\"openid profile email\" concurrently \"npm run dev -w apps/api\" \"npm run dev -w apps/gearshift-worker\" \"npm run dev -w apps/web\"",
+    "lint": "eslint .",
+    "seed": "npm run seed -w apps/gearshift-worker",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "tsc -b tsconfig.json && tsc -p apps/gearshift-worker/scripts/tsconfig.json"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.26.0",
+    "prettier": "^3.8.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.0"
+  },
+  "dependencies": {
+    "protobufjs": "^8.0.3"
+  }
+}

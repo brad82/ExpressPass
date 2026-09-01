@@ -1,0 +1,46 @@
+http:
+  routers:
+    web:
+      rule: Host(`localhost`) || Host(`web.localhost`)
+      entryPoints:
+        - web
+      priority: 1
+      service: web
+
+    api-host:
+      rule: Host(`api.localhost`)
+      entryPoints:
+        - web
+      service: api
+
+    api-path:
+      rule: Host(`localhost`) && PathPrefix(`/api`)
+      entryPoints:
+        - web
+      middlewares:
+        - api-strip
+      priority: 100
+      service: api
+
+    dashboard:
+      rule: Host(`traefik.localhost`)
+      entryPoints:
+        - web
+      service: api@internal
+
+  middlewares:
+    api-strip:
+      stripPrefix:
+        prefixes:
+          - /api
+
+  services:
+    web:
+      loadBalancer:
+        servers:
+          - url: http://web:80
+
+    api:
+      loadBalancer:
+        servers:
+          - url: http://api:4000

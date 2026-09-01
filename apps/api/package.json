@@ -1,0 +1,36 @@
+{
+  "name": "@consignment/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.1045.0",
+    "@aws-sdk/client-s3": "^3.812.0",
+    "@expresspass/shared": "file:../../packages/shared",
+    "@fastify/cors": "^11.0.1",
+    "@fastify/helmet": "^13.0.1",
+    "@fastify/sensible": "^6.0.3",
+    "amqplib": "^0.10.7",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.3.2",
+    "fastify-jwt-jwks": "^3.0.0",
+    "fastify-plugin": "^5.1.0",
+    "fastify-type-provider-zod": "^4.0.2",
+    "pg": "^8.15.6",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.7",
+    "@types/node": "^22.15.17",
+    "@types/pg": "^8.11.14",
+    "tsx": "^4.19.4",
+    "vitest": "^3.1.3"
+  }
+}

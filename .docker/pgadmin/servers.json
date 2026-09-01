@@ -1,0 +1,32 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Consignments Postgres",
+      "Group": "Development",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "consignments",
+      "Username": "consign",
+      "PassFile": "/pgadmin4/pgpass",
+      "Shared": true,
+      "SharedUsername": "consign",
+      "ConnectionParameters": {
+        "sslmode": "prefer"
+      }
+    },
+    "2": {
+      "Name": "Authentik Database",
+      "Group": "Development",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "authentik",
+      "Username": "authentik",
+      "PassFile": "/pgadmin4/pgpass",
+      "Shared": true,
+      "SharedUsername": "authentik",
+      "ConnectionParameters": {
+        "sslmode": "prefer"
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+http:
+  routers:
+    web:
+      rule: Host(`localhost`) || Host(`web.localhost`)
+      entryPoints:
+        - web
+      priority: 1
+      service: web
+
+    api-host:
+      rule: Host(`api.localhost`)
+      entryPoints:
+        - web
+      service: api
+
+    api-path:
+      rule: Host(`localhost`) && PathPrefix(`/api`)
+      entryPoints:
+        - web
+      middlewares:
+        - api-strip
+      priority: 100
+      service: api
+
+    dashboard:
+      rule: Host(`traefik.localhost`)
+      entryPoints:
+        - web
+      service: api@internal
+
+    authentik:
+      rule: Host(`auth.localhost`)
+      entryPoints:
+        - web
+      service: authentik
+
+    pgadmin:
+      rule: Host(`pgadmin.localhost`)
+      entryPoints:
+        - web
+      service: pgadmin
+
+  middlewares:
+    api-strip:
+      stripPrefix:
+        prefixes:
+          - /api
+
+  services:
+    web:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:3000
+
+    api:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:4000
+
+    authentik:
+      loadBalancer:
+        servers:
+          - url: http://authentik-server:9000
+
+    pgadmin:
+      loadBalancer:
+        servers:
+          - url: http://pgadmin:80
