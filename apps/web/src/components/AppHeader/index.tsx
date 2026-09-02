@@ -2,6 +2,7 @@ import {
   AppBar,
   Badge as NotificationBadge,
   Box,
+  Container,
   IconButton,
   Toolbar,
   Typography,
@@ -89,71 +90,80 @@ export function AppHeader({
   return (
     <AppBar position="sticky" elevation={0}>
       <Toolbar
+        disableGutters
         sx={{
           minHeight: "56px !important",
           height: 56,
-          gap: 2.5,
-          px: { xs: 1.5, md: 2.5 },
           bgcolor: colors.tier1Bg,
           color: "#fff",
         }}
       >
-        <IconButton
-          color="inherit"
-          aria-label="open navigation"
-          edge="start"
-          onClick={() => setDrawerOpen((open) => !open)}
-          sx={{ display: { md: "none" }, ml: -1 }}
+        <Container
+          maxWidth="xl"
+          sx={{ display: "flex", alignItems: "center", gap: 2.5, height: "100%" }}
         >
-          <Menu size={22} />
-        </IconButton>
-        <Typography
-          variant="h6"
-          component="span"
-          noWrap
-          sx={{
-            fontWeight: 700,
-            fontSize: { xs: "1.0625rem", md: "1.125rem" },
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Express Pass
-        </Typography>
-        <DesktopNavigation currentPath={currentPath} colors={colors} />
-        <Box sx={{ flexGrow: { xs: 1, md: 0 } }} />
-        <DecorativeSearch compact={false} />
-        <DecorativeSearch compact />
-        <IconButton
-          color="inherit"
-          aria-label="notifications"
-          onClick={onNotificationsClick}
-        >
-          <NotificationBadge badgeContent={unread} color="error">
-            <Bell size={20} />
-          </NotificationBadge>
-        </IconButton>
-        <AccountMenu
-          customer={customer}
-          authUserName={authUserName}
-          mode={mode}
-          colors={colors}
-          onToggleMode={onToggleMode}
-          onSignOut={onSignOut}
-        />
+          <IconButton
+            color="inherit"
+            aria-label="open navigation"
+            edge="start"
+            onClick={() => setDrawerOpen((open) => !open)}
+            sx={{ display: { md: "none" }, ml: -1 }}
+          >
+            <Menu size={22} />
+          </IconButton>
+          <Typography
+            variant="h6"
+            component="span"
+            noWrap
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: "1.0625rem", md: "1.125rem" },
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Express Pass
+          </Typography>
+          <DesktopNavigation currentPath={currentPath} colors={colors} />
+          <Box sx={{ flexGrow: { xs: 1, md: 0 } }} />
+          <DecorativeSearch compact={false} />
+          <DecorativeSearch compact />
+          <IconButton
+            color="inherit"
+            aria-label="notifications"
+            onClick={onNotificationsClick}
+          >
+            <NotificationBadge badgeContent={unread} color="error">
+              <Bell size={20} />
+            </NotificationBadge>
+          </IconButton>
+          <AccountMenu
+            customer={customer}
+            authUserName={authUserName}
+            mode={mode}
+            colors={colors}
+            onToggleMode={onToggleMode}
+            onSignOut={onSignOut}
+          />
+        </Container>
       </Toolbar>
       <Toolbar
+        disableGutters
         variant="dense"
         sx={{
           minHeight: "42px !important",
           height: 42,
-          px: { xs: 1.5, md: 2.5 },
           bgcolor: "background.paper",
           color: "text.primary",
           borderBottom: 1,
           borderColor: "divider",
         }}
       >
-        <Breadcrumb pathname={location.pathname} />
+        <Container
+          maxWidth="xl"
+          sx={{ display: "flex", alignItems: "center", height: "100%" }}
+        >
+          <Breadcrumb pathname={location.pathname} />
+        </Container>
       </Toolbar>
       <MobileNavigationDrawer
         open={drawerOpen}
