@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { describe, expect, it, vi } from "vitest";
 import { App } from "./App";
@@ -29,6 +29,8 @@ describe("App", () => {
         <App />
       </Provider>,
     );
-    expect(screen.getByText("Express Pass")).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("banner")).getByText("Express Pass"),
+    ).toBeInTheDocument();
   });
 });

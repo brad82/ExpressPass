@@ -60,6 +60,7 @@ export function PortalShell() {
         <AppHeader
           mode={mode}
           unread={portalData.unread}
+          customer={portalData.customer}
           authUserName={auth.userName}
           onNotificationsClick={openNotifications}
           onToggleMode={toggleMode}
